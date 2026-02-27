@@ -6,7 +6,10 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.millenaire.command.MillenaireCommands;
+import com.millenaire.culture.CultureRegistry;
 import com.millenaire.village.VillageManager;
+import com.millenaire.world.WorldEventHandler;
 
 /**
  * Millenaire Reborn - Main Mod Initializer
@@ -14,55 +17,93 @@ import com.millenaire.village.VillageManager;
  * Server-centric mod implementing autonomous villages with:
  * - Own economy and resource management
  * - NPCs with unique professions
- * - Cultural diversity
+ * - Cultural diversity (Norman, Japanese, etc.)
  * - Progressive building system
  * 
  * All village data is stored server-side using PersistentState.
  * Client receives only necessary sync data for rendering.
+ * 
+ * @version 1.0.0-alpha.1
+ * @since Minecraft 1.21.11
  */
 public class MillenaireReborn implements ModInitializer {
     
     public static final String MOD_ID = "millenaire";
+    public static final String MOD_VERSION = "1.0.0-alpha.1";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     
-    // Global configuration constants
-    public static final int VILLAGE_TICK_INTERVAL = 20; // Update villages every second (20 ticks)
-    public static final int VILLAGE_MIN_DISTANCE = 256; // Minimum blocks between village centers
-    public static final int VILLAGE_SEARCH_RADIUS = 128; // Search radius for village detection
+    // ========== Configuration Constants ==========
+    
+    /** Update villages every second (20 ticks) */
+    public static final int VILLAGE_TICK_INTERVAL = 20;
+    
+    /** Minimum blocks between village centers */
+    public static final int VILLAGE_MIN_DISTANCE = 256;
+    
+    /** Search radius for village detection */
+    public static final int VILLAGE_SEARCH_RADIUS = 128;
     
     @Override
     public void onInitialize() {
-        LOGGER.info("Initializing Millenaire Reborn for Minecraft 1.21.11");
+        LOGGER.info("===========================================");
+        LOGGER.info("  Millenaire Reborn v{}", MOD_VERSION);
+        LOGGER.info("  Minecraft 1.21.11 - Fabric");
+        LOGGER.info("===========================================");
         
-        // Register server lifecycle events
-        registerServerEvents();
+        // Initialize subsystems in order
+        initializeCultures();
+        initializeCommands();
+        initializeWorldEvents();
+        initializeServerEvents();
         
-        // Initialize subsystems
-        initializeSubsystems();
-        
-        LOGGER.info("Millenaire Reborn initialized successfully");
+        LOGGER.info("Millenaire Reborn initialized successfully!");
     }
     
     /**
-     * Register server lifecycle events for village management.
-     * VillageManager is attached to each ServerWorld via PersistentState.
+     * Initialize culture registry with all available cultures.
      */
-    private void registerServerEvents() {
-        // Server starting - prepare global registries
+    private void initializeCultures() {
+        LOGGER.info("Loading cultures...");
+        CultureRegistry.init();
+    }
+    
+    /**
+     * Register server commands.
+     */
+    private void initializeCommands() {
+        LOGGER.info("Registering commands...");
+        MillenaireCommands.register();
+    }
+    
+    /**
+     * Register world generation events.
+     */
+    private void initializeWorldEvents() {
+        LOGGER.info("Registering world events...");
+        WorldEventHandler.register();
+    }
+    
+    /**
+     * Register server lifecycle and tick events.
+     */
+    private void initializeServerEvents() {
+        LOGGER.info("Registering server events...");
+        
+        // Server starting - prepare global state
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            LOGGER.info("Millenaire: Server starting, preparing registries...");
+            LOGGER.info("Server starting - preparing Millenaire...");
         });
         
-        // Server started - VillageManager initializes per-world on first access
+        // Server started - ready for play
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            LOGGER.info("Millenaire: Server started, village system ready");
-            // VillageManager.get(world) will be called lazily when worlds are accessed
+            LOGGER.info("Server started - Millenaire village system active");
+            LOGGER.info("Use /millenaire commands to manage villages");
         });
         
         // Server stopping - cleanup
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-            LOGGER.info("Millenaire: Server stopping, saving village data...");
-            // PersistentState automatically saves on server stop
+            LOGGER.info("Server stopping - saving village data...");
+            WorldEventHandler.clearCache();
         });
         
         // Server tick - update village simulations
@@ -77,28 +118,5 @@ public class MillenaireReborn implements ModInitializer {
                 });
             }
         });
-    }
-    
-    /**
-     * Initialize mod subsystems (cultures, buildings, NPCs, etc.)
-     * Called once during mod initialization.
-     */
-    private void initializeSubsystems() {
-        LOGGER.info("Millenaire: Initializing subsystems...");
-        
-        // TODO: Register cultures
-        // CultureRegistry.init();
-        
-        // TODO: Register building types
-        // BuildingRegistry.init();
-        
-        // TODO: Register NPC types
-        // NPCRegistry.init();
-        
-        // TODO: Register items and blocks
-        // MillenaireItems.init();
-        // MillenaireBlocks.init();
-        
-        LOGGER.info("Millenaire: Subsystems initialized");
     }
 }
