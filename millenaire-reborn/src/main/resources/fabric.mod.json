@@ -1,0 +1,35 @@
+{
+	"schemaVersion": 1,
+	"id": "millenaire",
+	"version": "${version}",
+	"name": "Millenaire Reborn",
+	"description": "Autonomous villages with their own economy, culture, NPCs and construction.",
+	"authors": [
+		"Millenaire Team",
+		"Stafford812"
+	],
+	"contact": {
+		"homepage": "https://github.com/stafford812/millenaire-reborn",
+		"sources": "https://github.com/stafford812/millenaire-reborn"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/millenaire/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.millenaire.MillenaireMod"
+		],
+		"client": [
+			"com.millenaire.MillenaireModClient"
+		]
+	},
+	"mixins": [
+		"millenaire.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
