@@ -44,6 +44,25 @@ com.millenaire
 - [x] VillageManager.java - PersistentState for village storage
 - [x] VillageData.java - complete village state with NBT serialization
 
+### Phase 2: World Integration & Cultures ✓
+- [x] Culture.java - culture definition with Builder pattern
+- [x] CultureRegistry.java - central registry with biome-weighted selection
+- [x] VillageGenerator.java - deterministic chunk-based village spawning
+- [x] WorldEventHandler.java - chunk load event handling
+- [x] MillenaireCommands.java - admin commands for testing
+
+### Built-in Cultures:
+1. **Norman** (weight: 20) - Medieval European, plains/forest biomes
+2. **Japanese** (weight: 10) - Traditional Japanese, cherry/bamboo biomes
+
+### Commands:
+- `/millenaire spawn <culture>` - Force spawn village at player location
+- `/millenaire list` - List all villages
+- `/millenaire info` - Show nearest village details
+- `/millenaire cultures` - List available cultures
+- `/millenaire nearest` - Find nearest village
+- `/millenaire tp <index>` - Teleport to village
+
 ### Key Features in VillageManager:
 - Per-world storage via PersistentStateManager
 - Spatial index for fast lookups
@@ -58,6 +77,12 @@ com.millenaire
 - Player reputation system
 - Level-up mechanics
 - Complete NBT serialization
+
+### Key Features in VillageGenerator:
+- Deterministic spawning based on world seed
+- Biome-aware culture selection
+- Terrain flatness validation
+- Minimum distance enforcement
 
 ## Prioritized Backlog
 
